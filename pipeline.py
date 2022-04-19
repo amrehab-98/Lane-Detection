@@ -74,17 +74,17 @@ def combine_thresh(img, s_thresh=(100, 255), l_thresh=(120, 255)):
     #binary_output[(s_channel >= thresh[0]) & (s_channel <= thresh[1])] = 1
     # apply the region of interest mask
     mask = np.zeros_like(color_combined)
-#     np.array([[int(0), int(y)], [int(x), int(y)], [int(0.55*x), int(0.6*y)], [int(0.45*x), int(0.6*y)]]
+    #np.array([[int(0), int(y)], [int(x), int(y)], [int(0.55*x), int(0.6*y)], [int(0.45*x), int(0.6*y)]]
     region_of_interest_vertices = np.array([[0,height-1], [width/2, int(0.55*height)], [width-1, height-1]], dtype=np.int32)
     region_of_disinterest_vertices = np.array([[0.40*width,height-1], [width/2, int(0.55*height)], [width-1-0.40*width, height-1]], dtype=np.int32)
-#moraba3#    region_of_interest_vertices = np.array([[0,height-1],[width-1, height-1], [int(0.55*width), int(0.6*height)],[int(0.45*width), int(0.6*height)] ], dtype=np.int32)
-#     region_of_interest_vertices = np.array([[150,height-1],[1200, height-1], [int(0.55*width), int(0.7*height)],[int(0.45*width), int(0.7*height)] ], dtype=np.int32)
+    #square
+    #region_of_interest_vertices = np.array([[0,height-1],[width-1, height-1], [int(0.55*width), int(0.6*height)],[int(0.45*width), int(0.6*height)] ], dtype=np.int32)
+    #region_of_interest_vertices = np.array([[150,height-1],[1200, height-1], [int(0.55*width), int(0.7*height)],[int(0.45*width), int(0.7*height)] ], dtype=np.int32)
 
     cv2.fillPoly(mask, [region_of_interest_vertices], 1)
     cv2.fillPoly(mask, [region_of_disinterest_vertices], 0)
 
     thresholded = cv2.bitwise_and(color_combined, mask)
-
     return thresholded
 
 def thresholding(img):
@@ -104,7 +104,6 @@ def perspective_warp(img,
     dst = dst * np.float32(dst_size)
     # Given src and dst points, calculate the perspective transform matrix
     M = cv2.getPerspectiveTransform(src, dst)
-    M_Inv = cv2.getPerspectiveTransform(dst, src)
     # Warp the image using OpenCV warpPerspective()
     warped = cv2.warpPerspective(img, M, dst_size)
     return warped
@@ -199,30 +198,25 @@ def sliding_window(img, nwindows=9, margin=150, minpix = 1, draw_windows=True):
     righty = nonzeroy[right_lane_inds]
 
     # Fit a second order polynomial to each
-    if(lefty.size != 0 and leftx.size != 0):
+    if(lefty.size >= 3000 and leftx.size >= 3000)or(righty.size >= 3000 and rightx.size >= 3000):
         left_fit = np.polyfit(lefty, leftx, 2)
-
         left_a.append(left_fit[0])
         left_b.append(left_fit[1])
         left_c.append(left_fit[2])
-
-    else:
-        left_a.append(left_a[-1])
-        left_b.append(left_b[-1])
-        left_c.append(left_c[-1])
-
-    if(righty.size !=0 and rightx.size !=0):
-        right_fit = np.polyfit(righty, rightx, 2)
         
+        right_fit = np.polyfit(righty, rightx, 2)
         right_a.append(right_fit[0])
         right_b.append(right_fit[1])
         right_c.append(right_fit[2])
+
     else:
-        right_a.append(right_a[-1])
-        right_b.append(right_b[-1])
-        right_c.append(right_c[-1])
-        
-    
+        left_a.append(left_a[-20])
+        left_b.append(left_b[-20])
+        left_c.append(left_c[-20])
+        right_a.append(right_a[-20])
+        right_b.append(right_b[-20])
+        right_c.append(right_c[-20])
+
     left_fit_[0] = np.mean(left_a[-10:])
     left_fit_[1] = np.mean(left_b[-10:])
     left_fit_[2] = np.mean(left_c[-10:])
@@ -230,6 +224,7 @@ def sliding_window(img, nwindows=9, margin=150, minpix = 1, draw_windows=True):
     right_fit_[0] = np.mean(right_a[-10:])
     right_fit_[1] = np.mean(right_b[-10:])
     right_fit_[2] = np.mean(right_c[-10:])
+    
     
     # Generate x and y values for plotting
     ploty = np.linspace(0, img.shape[0]-1, img.shape[0] )
@@ -296,18 +291,12 @@ def full_pipeline(img):
     cv2.putText(img, 'Lane Curvature: {:.0f} m'.format(lane_curve), (570, 620), font, fontSize, fontColor, 2)
     cv2.putText(img, 'Vehicle offset: {:.4f} m'.format(curverad[2]), (570, 650), font, fontSize, fontColor, 2)
     
-    th_img_rgb = np.dstack((th_img,th_img,th_img))*255
-    
+    th_img_rgb = np.dstack((th_img,th_img,th_img))*255    
     pew_img_rgb = np.dstack((pew_img,pew_img,pew_img))*255
     
-    
-    
     img_row1 = np.concatenate((th_img_rgb, pew_img_rgb),axis = 0)
-
-    
     img_row2 = np.concatenate((sw_img, img),axis = 0)
 
-    
     final_img = np.concatenate((img_row1, img_row2),axis = 1)
     final_img = cv2.resize(final_img,(img.shape[1],img.shape[0]))
     

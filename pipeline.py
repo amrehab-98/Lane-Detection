@@ -7,9 +7,18 @@ import sys
 debugging = 0
 curve=[]
 
+
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
-    # Apply x or y gradient with the OpenCV Sobel() function
-    # and take the absolute value
+    """Applies sobel filter and applies threshold.
+
+    :param gray: A gray scale image.
+    :param orient: Direction in which sobel filter is applied.
+    :param thresh:  threshold to be applied on the output image.
+
+    :return: a binary image after applying sobel
+
+    """
+    # check orientation to apply sobel in the direction.
     if orient == 'x':
         abs_sobel = np.absolute(cv2.Sobel(gray, cv2.CV_64F, 1, 0))
     if orient == 'y':
@@ -25,12 +34,19 @@ def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
 
 
 def dir_threshold(gray, sobel_kernel=3, thresh=(0, np.pi/2)):
-    # Grayscale
-    # gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    """Applies sobel filter and calculates direction of gradient and applies a threshold.
+
+    :param gray: A gray scale image.
+    :param sobel_kernel: kernel size
+    :param thresh: angle threshold to be applied on the output image.
+
+    :return: a binary image after applying sobel and thresholding with an angle.
+
+    """
     # Calculate the x and y gradients
     sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
     sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
-    # Take the absolute value of the gradient direction, 
+    # Take the absolute value of the gradient direction,
     # apply a threshold, and create a binary image result
     absgraddir = np.arctan2(np.absolute(sobely), np.absolute(sobelx))
     binary_output = np.zeros_like(absgraddir)
@@ -41,12 +57,18 @@ def dir_threshold(gray, sobel_kernel=3, thresh=(0, np.pi/2)):
 
 
 def combine_thresh(img, s_thresh=(100, 255), l_thresh=(120, 255)):
+    """Combines abs_sobel_thresh, dir_threshold and threshold on R, G, S and L channels to detect the lanes.
 
+    :param img: An input RGB image.
+    :param s_thresh: S channel threshold.
+    :param l_thresh: L channel threshold.
+
+    :return: a binary image after applying all different thresholds.
+    """
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     height, width = gray.shape
 
-    # combined = ((grad_x == 1)  & (grad_y == 1) & (mag_binary == 1) & (dir_binary == 1))
     grad_x = abs_sobel_thresh(gray, 'x', thresh=(10, 200))
     dir_binary = dir_threshold(gray, thresh=(np.pi/6, np.pi/2))
     combined = ((grad_x == 1) & (dir_binary == 1))
@@ -76,7 +98,6 @@ def combine_thresh(img, s_thresh=(100, 255), l_thresh=(120, 255)):
     # And it should also have a gradient, as per our thresholds
     color_combined[(r_g_condition & l_condition) & (s_condition | combined)] = 1
 
-    # binary_output[(s_channel >= thresh[0]) & (s_channel <= thresh[1])] = 1
     # apply the region of interest mask
     mask = np.zeros_like(color_combined)
     region_of_interest_vertices = np.array([[0, height-1], [width/2, int(0.55*height)], [width-1, height-1]],
@@ -88,6 +109,12 @@ def combine_thresh(img, s_thresh=(100, 255), l_thresh=(120, 255)):
 
 
 def thresholding(img):
+    """An interface for combine_thresh.
+
+    :param img: An input RGB image.
+
+    :return: a binary image after applying all different thresholds.
+    """
 
     thresholded = combine_thresh(img, s_thresh=(100, 255), l_thresh=(120, 255))
     return thresholded
@@ -97,6 +124,15 @@ def perspective_warp(img,
                      dst_size=(1280, 720),
                      src=np.float32([(0.38, 0.7), (0.63, 0.7), (0.1, 1), (1, 1)]),
                      dst=np.float32([(0, 0), (1, 0), (0, 1), (1, 1)])):
+    """Transforms the car view into bird eye view.
+
+    :param img: An input RGB image.
+    :param dst_size: destination image size.
+    :param src: 4 points bounding the target area.
+    :param dst: 4 points bounding the new position for the src points.
+
+    :return: a bird eye view binary image.
+    """
     img_size = np.float32([(img.shape[1], img.shape[0])])
     src = src * img_size
     # For destination points, I'm arbitrarily choosing some points to be
@@ -114,6 +150,16 @@ def inv_perspective_warp(img,
                          dst_size=(1280, 720),
                          src=np.float32([(0, 0), (1, 0), (0, 1), (1, 1)]),
                          dst=np.float32([(0.38, 0.7), (0.63, 0.7), (0.1, 1), (1, 1)])):
+    """Transforms bird eye view back to the car view.
+
+    :param img: An input RGB image.
+    :param dst_size: destination image size.
+    :param src: 4 points bounding the target area.
+    :param dst: 4 points bounding the new position (original positions) for the src points.
+
+    :return: a car view binary image.
+    """
+
     img_size = np.float32([(img.shape[1], img.shape[0])])
     src = src * img_size
     # For destination points, I'm arbitrarily choosing some points to be
@@ -128,11 +174,27 @@ def inv_perspective_warp(img,
 
 
 def get_hist(img):
+    """returns a histogram that shows the concentration of white pixels in a certain column.
+
+    :param img: binary image.
+    :return: numpy array (histogram).
+    """
+
     hist = np.sum(img[img.shape[0]//2:,:], axis=0)
     return hist
 
 
 def sliding_window(img, nwindows=9, margin=150, minpix=1, draw_windows=True):
+    """Applies the sliding window search algorithm to fit a 2nd order curve to each lane.
+
+    :param img: binary image.
+    :param nwindows: number of windows per image.
+    :param margin: half width of the window.
+    :param minpix: min. number of white pixels per window to be accepted in deciding the next center.
+    :param draw_windows: set to True or False to decide whether to draw the sliding windows on the output image or not.
+
+    :return: bird view image with the pixels that belong to a lane colored.
+    """
     global left_a, left_b, left_c, right_a, right_b, right_c
     left_fit_ = np.empty(3)
     right_fit_ = np.empty(3)
@@ -240,15 +302,23 @@ def sliding_window(img, nwindows=9, margin=150, minpix=1, draw_windows=True):
 
 
 def get_curve(img, leftx, rightx):
+    """Calculates curvature of the two lane lines and the offset from center of the lane.
+    :param img: original RGB image.
+    :param leftx: numpy array to represent the left curve.
+    :param rightx: numpy array to represent the right curve.
+
+    :return: left line curvature, right line curvature, offset from center of the lane.
+    """ 
+
     ploty = np.linspace(0, img.shape[0]-1, img.shape[0])
     y_eval = np.max(ploty)
-    ym_per_pix = 30.5/720 # meters per pixel in y dimension
-    xm_per_pix = 3.7/720 # meters per pixel in x dimension
+    ym_per_pix = 30.5 / 720 # meters per pixel in y dimension
+    xm_per_pix = 3.7 / 720 # meters per pixel in x dimension
 
     # Fit new polynomials to x,y in world space
     left_fit_cr = np.polyfit(ploty*ym_per_pix, leftx*xm_per_pix, 2)
     right_fit_cr = np.polyfit(ploty*ym_per_pix, rightx*xm_per_pix, 2)
-    # Calculate the new radii of curvature 
+    # Calculate the new radii of curvature
     left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
     right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
 
@@ -264,6 +334,14 @@ def get_curve(img, leftx, rightx):
 
 
 def draw_lanes(img, left_fit, right_fit):
+    """Draws the lane on top of the original image.
+    :param img: original RGB image.
+    :param left_fit: numpy array to represent the left curve.
+    :param right_fit: numpy array to represent the right curve.
+
+    :return: output image where the lane is highlighted.
+    """ 
+
     ploty = np.linspace(0, img.shape[0]-1, img.shape[0])
     color_img = np.zeros_like(img)
     
@@ -287,13 +365,19 @@ def draw_lanes(img, left_fit, right_fit):
     return output
 
 def full_pipeline(img):
+    """Applies a full pipeline to detect lanes.
+    
+    :param img: original RGB image.
+
+    :return: output image where the lane is highlighted.
+    """ 
     th_img = thresholding(img)
 
     pew_img = perspective_warp(th_img)
 
     sw_img, curves, lanes, ploty = sliding_window(pew_img, draw_windows=True)
 
-    curverad =get_curve(img, curves[0], curves[1])
+    curverad = get_curve(img, curves[0], curves[1])
 
     lane_curve = np.mean([curverad[0], curverad[1]])
 

@@ -206,7 +206,7 @@ def sliding_window(img, nwindows=9, margin=150, minpix=1, draw_windows=True):
     rightx_base = np.argmax(histogram[quarter*3:]) + quarter*3
 
     # Set height of windows
-    window_height = np.int(img.shape[0]/nwindows)
+    window_height = int(img.shape[0]/nwindows)
     # Identify the x and y positions of all nonzero pixels in the image
     nonzero = img.nonzero()
     
@@ -245,9 +245,9 @@ def sliding_window(img, nwindows=9, margin=150, minpix=1, draw_windows=True):
         right_lane_inds.append(good_right_inds)
         # If you found > minpix pixels, recenter next window on their mean position
         if len(good_left_inds)  > minpix:
-            leftx_current = np.int(np.mean(nonzerox[good_left_inds]))
+            leftx_current = int(np.mean(nonzerox[good_left_inds]))
         if len(good_right_inds)  > minpix:        
-            rightx_current = np.int(np.mean(nonzerox[good_right_inds]))
+            rightx_current = int(np.mean(nonzerox[good_right_inds]))
 
     # Concatenate the arrays of indices
     left_lane_inds = np.concatenate(left_lane_inds)
@@ -351,8 +351,8 @@ def draw_lanes(img, left_fit, right_fit):
     
     cv2.fillPoly(color_img, np.int_(points), (0,200,255))
 
-    cv2.polylines(lane, np.int32(left), False, color=(0,0,255), thickness=50)
-    cv2.polylines(lane, np.int32(right), False, color=(255,0,0), thickness=50)
+    cv2.polylines(lane, np.int32(left), False, color=(0,0,255), thickness=20)
+    cv2.polylines(lane, np.int32(right), False, color=(255,0,0), thickness=20)
 
     inv_perspective = inv_perspective_warp(lane)
     output = cv2.addWeighted(inv_perspective, 1 , img, 1, 0)
@@ -393,10 +393,10 @@ def full_pipeline(img):
         th_img_rgb = np.dstack((th_img,th_img,th_img))*255    
         pew_img_rgb = np.dstack((pew_img,pew_img,pew_img))*255
         
-        img_row1 = np.concatenate((th_img_rgb, pew_img_rgb),axis = 0)
-        img_row2 = np.concatenate((sw_img, img),axis = 0)
+        img_col1 = np.concatenate((img, pew_img_rgb),axis = 0)
+        img_col2 = np.concatenate((th_img_rgb,sw_img ),axis = 0)
 
-        final_img = np.concatenate((img_row1, img_row2),axis = 1)
+        final_img = np.concatenate((img_col1, img_col2),axis = 1)
         final_img = cv2.resize(final_img,(img.shape[1],img.shape[0]))
 
     return final_img
@@ -410,8 +410,8 @@ if __name__ == '__main__':
     output_vid = sys.argv[2]
     if(sys.argv[3] == "0"):
         debugging = 0
-        clip = myclip.fl_image(full_pipeline).subclip(0,10)
-    else :
+        clip = myclip.fl_image(full_pipeline)
+    else:
         debugging = 1
         clip = myclip.fl_image(full_pipeline)
     clip.write_videofile(output_vid, audio=False)

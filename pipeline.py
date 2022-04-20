@@ -5,6 +5,7 @@ from moviepy.editor import VideoFileClip
 import sys
 
 debugging = 0
+curve=[]
 
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
     # Apply x or y gradient with the OpenCV Sobel() function
@@ -266,15 +267,24 @@ def draw_lanes(img, left_fit, right_fit):
     ploty = np.linspace(0, img.shape[0]-1, img.shape[0])
     color_img = np.zeros_like(img)
     
+    lane = np.zeros_like(img)
+
     left = np.array([np.transpose(np.vstack([left_fit, ploty]))])
     right = np.array([np.flipud(np.transpose(np.vstack([right_fit, ploty])))])
     points = np.hstack((left, right))
     
     cv2.fillPoly(color_img, np.int_(points), (0,200,255))
-    inv_perspective = inv_perspective_warp(color_img)
-    inv_perspective = cv2.addWeighted(img, 1, inv_perspective, 0.7, 0)
-    return inv_perspective
 
+    cv2.polylines(lane, np.int32(left), False, color=(0,0,255), thickness=50)
+    cv2.polylines(lane, np.int32(right), False, color=(255,0,0), thickness=50)
+
+    inv_perspective = inv_perspective_warp(lane)
+    output = cv2.addWeighted(inv_perspective, 1 , img, 1, 0)
+
+    inv_perspective = inv_perspective_warp(color_img)
+    output = cv2.addWeighted(inv_perspective, 1 , output, 1, 0)
+
+    return output
 
 def full_pipeline(img):
     th_img = thresholding(img)
@@ -284,7 +294,11 @@ def full_pipeline(img):
     sw_img, curves, lanes, ploty = sliding_window(pew_img, draw_windows=True)
 
     curverad =get_curve(img, curves[0], curves[1])
+
     lane_curve = np.mean([curverad[0], curverad[1]])
+
+    curve.append(lane_curve)
+
     img = draw_lanes(img, curves[0], curves[1])
     
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -316,8 +330,9 @@ if __name__ == '__main__':
     output_vid = sys.argv[2]
     if(sys.argv[3] == "0"):
         debugging = 0
-        clip = myclip.fl_image(full_pipeline)
+        clip = myclip.fl_image(full_pipeline).subclip(0,10)
     else :
         debugging = 1
         clip = myclip.fl_image(full_pipeline)
     clip.write_videofile(output_vid, audio=False)
+    

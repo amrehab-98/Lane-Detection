@@ -3,11 +3,15 @@
 ## How to run the project
 - Navigate to the project directory and open windows command prompt.
 ```cmd
-> batchscript.bat input_path output_path --debug 1
+> laneDetection.bat input_path output_path --debug 1
+```
+- Example
+```cmd
+> laneDetection.bat ./input/project_video.mp4 ./output/out.mp4
 ```
 - Example (to open the project video in debugging mode)
 ```cmd
-> batchscript.bat ./input/project_video.mp4 ./output/out.mp4 --debug 1
+> laneDetection.bat ./input/project_video.mp4 ./output/out.mp4 --debug 1
 ```
 ___________________________
 

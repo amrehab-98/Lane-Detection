@@ -4,6 +4,7 @@ import cv2
 from moviepy.editor import VideoFileClip
 import sys
 
+debugging = 0
 
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
     # Apply x or y gradient with the OpenCV Sobel() function
@@ -292,15 +293,18 @@ def full_pipeline(img):
     cv2.putText(img, 'Lane Curvature: {:.0f} m'.format(lane_curve), (570, 620), font, fontSize, fontColor, 2)
     cv2.putText(img, 'Vehicle offset: {:.4f} m'.format(curverad[2]), (570, 650), font, fontSize, fontColor, 2)
     
-    th_img_rgb = np.dstack((th_img,th_img,th_img))*255    
-    pew_img_rgb = np.dstack((pew_img,pew_img,pew_img))*255
-    
-    img_row1 = np.concatenate((th_img_rgb, pew_img_rgb),axis = 0)
-    img_row2 = np.concatenate((sw_img, img),axis = 0)
+    if(debugging==0):
+        final_img = img
+    else:
+        th_img_rgb = np.dstack((th_img,th_img,th_img))*255    
+        pew_img_rgb = np.dstack((pew_img,pew_img,pew_img))*255
+        
+        img_row1 = np.concatenate((th_img_rgb, pew_img_rgb),axis = 0)
+        img_row2 = np.concatenate((sw_img, img),axis = 0)
 
-    final_img = np.concatenate((img_row1, img_row2),axis = 1)
-    final_img = cv2.resize(final_img,(img.shape[1],img.shape[0]))
-    
+        final_img = np.concatenate((img_row1, img_row2),axis = 1)
+        final_img = cv2.resize(final_img,(img.shape[1],img.shape[0]))
+
     return final_img
 
 
@@ -310,5 +314,10 @@ if __name__ == '__main__':
     right_a, right_b, right_c = [], [], []
     myclip = VideoFileClip(sys.argv[1])
     output_vid = sys.argv[2]
-    clip = myclip.fl_image(full_pipeline)
+    if(sys.argv[3] == "0"):
+        debugging = 0
+        clip = myclip.fl_image(full_pipeline)
+    else :
+        debugging = 1
+        clip = myclip.fl_image(full_pipeline)
     clip.write_videofile(output_vid, audio=False)

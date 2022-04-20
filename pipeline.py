@@ -5,8 +5,6 @@ from moviepy.editor import VideoFileClip
 import sys
 
 debugging = 0
-curve=[]
-
 
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
     """Applies sobel filter and applies threshold.
@@ -380,8 +378,6 @@ def full_pipeline(img):
     curverad = get_curve(img, curves[0], curves[1])
 
     lane_curve = np.mean([curverad[0], curverad[1]])
-
-    curve.append(lane_curve)
 
     img = draw_lanes(img, curves[0], curves[1])
     

@@ -14600,29 +14600,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Applies sobel filter and applies threshold.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="c1">#using autoreload 1 to reload all modules imported by %aimport everytime before executing the python code typed .</span>
+<span class="o">%</span><span class="k">autoreload</span> 1
 
-<span class="sd">    :param gray: A gray scale image.</span>
-<span class="sd">    :param orient: Direction in which sobel filter is applied.</span>
-<span class="sd">    :param thresh:  threshold to be applied on the output image.</span>
-
-<span class="sd">    :return: a binary image after applying sobel</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># check orientation to apply sobel in the direction.</span>
-    <span class="k">if</span> <span class="n">orient</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
-        <span class="n">abs_sobel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">orient</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
-        <span class="n">abs_sobel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="c1"># Rescale back to 8 bit integer</span>
-    <span class="n">scaled_sobel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">abs_sobel</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">abs_sobel</span><span class="p">))</span>
-    <span class="c1"># Create a copy and apply the threshold</span>
-    <span class="n">binary_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">scaled_sobel</span><span class="p">)</span>
-    <span class="n">binary_output</span><span class="p">[(</span><span class="n">scaled_sobel</span> <span class="o">&gt;=</span> <span class="n">thresh</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">scaled_sobel</span> <span class="o">&lt;=</span> <span class="n">thresh</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">sobel_mask</span> <span class="o">=</span> <span class="n">binary_output</span>
-    <span class="c1"># Return the result</span>
-    <span class="k">return</span> <span class="n">sobel_mask</span>
+<span class="o">%</span><span class="k">aimport</span> pipeline
 </pre></div>
 
      </div>
@@ -14642,9 +14624,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
-<span class="n">sobel_output_x</span> <span class="o">=</span> <span class="n">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,(</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">))</span>
+<span class="n">sobel_output_x</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,(</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">))</span>
 
-<span class="n">sobel_output_y</span> <span class="o">=</span> <span class="n">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,(</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">))</span>
+<span class="n">sobel_output_y</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">,(</span><span class="mi">10</span><span class="p">,</span><span class="mi">200</span><span class="p">))</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sobel_output_x</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
@@ -14686,7 +14668,7 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -14694,43 +14676,7 @@ jp-needs-light-background
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dir_threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">sobel_kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Applies sobel filter and calculates direction of gradient and applies a threshold.</span>
-
-<span class="sd">    :param gray: A gray scale image.</span>
-<span class="sd">    :param sobel_kernel: kernel size</span>
-<span class="sd">    :param thresh: angle threshold to be applied on the output image.</span>
-
-<span class="sd">    :return: a binary image after applying sobel and thresholding with an angle.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Calculate the x and y gradients</span>
-    <span class="n">sobelx</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="n">sobel_kernel</span><span class="p">)</span>
-    <span class="n">sobely</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Sobel</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="n">sobel_kernel</span><span class="p">)</span>
-    <span class="c1"># Take the absolute value of the gradient direction,</span>
-    <span class="c1"># apply a threshold, and create a binary image result</span>
-    <span class="n">absgraddir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">sobely</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">sobelx</span><span class="p">))</span>
-    <span class="n">binary_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">absgraddir</span><span class="p">)</span>
-    <span class="n">binary_output</span><span class="p">[(</span><span class="n">absgraddir</span> <span class="o">&gt;=</span> <span class="n">thresh</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">absgraddir</span> <span class="o">&lt;=</span> <span class="n">thresh</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">dir_mask</span> <span class="o">=</span> <span class="n">binary_output</span>
-    <span class="c1"># Return the binary image</span>
-    <span class="k">return</span> <span class="n">dir_mask</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sobel_output_dir</span> <span class="o">=</span> <span class="n">dir_threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="mi">3</span> <span class="p">,(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sobel_output_dir</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">dir_threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span><span class="mi">3</span> <span class="p">,(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sobel_output_dir</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
@@ -14771,93 +14717,17 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">combine_thresh</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">s_thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">l_thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">255</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Combines abs_sobel_thresh, dir_threshold and threshold on R, G, S and L channels to detect the lanes.</span>
-
-<span class="sd">    :param img: An input RGB image.</span>
-<span class="sd">    :param s_thresh: S channel threshold.</span>
-<span class="sd">    :param l_thresh: L channel threshold.</span>
-
-<span class="sd">    :return: a binary image after applying all different thresholds.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Convert to grayscale</span>
-    <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2GRAY</span><span class="p">)</span>
-    <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">gray</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="n">grad_x</span> <span class="o">=</span> <span class="n">abs_sobel_thresh</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
-    <span class="n">dir_binary</span> <span class="o">=</span> <span class="n">dir_threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">combined</span> <span class="o">=</span> <span class="p">((</span><span class="n">grad_x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dir_binary</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
-
-    <span class="c1"># R &amp; G thresholds so that yellow lanes are detected well.</span>
-    <span class="n">color_threshold</span> <span class="o">=</span> <span class="mi">150</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="n">G</span> <span class="o">=</span> <span class="n">img</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">color_combined</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-    <span class="n">r_g_condition</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">&gt;</span> <span class="n">color_threshold</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">G</span> <span class="o">&gt;</span> <span class="n">color_threshold</span><span class="p">)</span>
-
-    <span class="c1"># Apply color threshold for better detection of yello and white lines in all environmental condition</span>
-    <span class="n">hls</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2HLS</span><span class="p">)</span>
-    <span class="c1"># Select S channel because it is usually the best performant</span>
-    <span class="c1"># for this task. R channel also performs similarly.</span>
-    <span class="n">s_channel</span> <span class="o">=</span> <span class="n">hls</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span>
-    <span class="n">l_channel</span> <span class="o">=</span> <span class="n">hls</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># S channel performs well for detecting bright yellow and white lanes</span>
-    <span class="n">s_condition</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_channel</span> <span class="o">&gt;</span> <span class="n">s_thresh</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">s_channel</span> <span class="o">&lt;=</span> <span class="n">s_thresh</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="c1"># We put a threshold on the L channel to avoid pixels which have shadows and as a result darker.</span>
-    <span class="n">l_condition</span> <span class="o">=</span> <span class="p">(</span><span class="n">l_channel</span> <span class="o">&gt;</span> <span class="n">l_thresh</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">l_channel</span> <span class="o">&lt;=</span> <span class="n">l_thresh</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="c1"># combine all the thresholds</span>
-    <span class="c1"># A pixel should either be a yellowish or whiteish</span>
-    <span class="c1"># And it should also have a gradient, as per our thresholds</span>
-    <span class="n">color_combined</span><span class="p">[(</span><span class="n">r_g_condition</span> <span class="o">&amp;</span> <span class="n">l_condition</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">s_condition</span> <span class="o">|</span> <span class="n">combined</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
-
-    <span class="c1"># apply the region of interest mask</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">color_combined</span><span class="p">)</span>
-    <span class="n">region_of_interest_vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.55</span><span class="o">*</span><span class="n">height</span><span class="p">)],</span> <span class="p">[</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
-                                           <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">fillPoly</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="n">region_of_interest_vertices</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">thresholded</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">color_combined</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">thresholded</span>
-
-<span class="k">def</span> <span class="nf">thresholding</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An interface for combine_thresh.</span>
-
-<span class="sd">    :param img: An input RGB image.</span>
-
-<span class="sd">    :return: a binary image after applying all different thresholds.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">thresholded</span> <span class="o">=</span> <span class="n">combine_thresh</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">s_thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">l_thresh</span><span class="o">=</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">thresholded</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">RGB</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
 
-<span class="n">mask_output</span> <span class="o">=</span> <span class="n">thresholding</span><span class="p">(</span><span class="n">RGB</span><span class="p">)</span>
+<span class="n">mask_output</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">thresholding</span><span class="p">(</span><span class="n">RGB</span><span class="p">)</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
@@ -14898,83 +14768,17 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">perspective_warp</span><span class="p">(</span><span class="n">img</span><span class="p">,</span>
-                     <span class="n">dst_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span>
-                     <span class="n">src</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="mf">0.38</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.63</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]),</span>
-                     <span class="n">dst</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])):</span>
-    <span class="sd">&quot;&quot;&quot;Transforms the car view into bird eye view.</span>
-
-<span class="sd">    :param img: An input RGB image.</span>
-<span class="sd">    :param dst_size: destination image size.</span>
-<span class="sd">    :param src: 4 points bounding the target area.</span>
-<span class="sd">    :param dst: 4 points bounding the new position for the src points.</span>
-
-<span class="sd">    :return: a bird eye view binary image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">img_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">src</span> <span class="o">*</span> <span class="n">img_size</span>
-    <span class="c1"># For destination points, I&#39;m arbitrarily choosing some points to be</span>
-    <span class="c1"># a nice fit for displaying our warped result</span>
-    <span class="c1"># again, not exact, but close enough for our purposes</span>
-    <span class="n">dst</span> <span class="o">=</span> <span class="n">dst</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">dst_size</span><span class="p">)</span>
-    <span class="c1"># Given src and dst points, calculate the perspective transform matrix</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getPerspectiveTransform</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
-    <span class="c1"># Warp the image using OpenCV warpPerspective()</span>
-    <span class="n">warped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpPerspective</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">dst_size</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">warped</span>
-
-
-<span class="k">def</span> <span class="nf">inv_perspective_warp</span><span class="p">(</span><span class="n">img</span><span class="p">,</span>
-                         <span class="n">dst_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">),</span>
-                         <span class="n">src</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]),</span>
-                         <span class="n">dst</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="mf">0.38</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.63</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])):</span>
-    <span class="sd">&quot;&quot;&quot;Transforms bird eye view back to the car view.</span>
-
-<span class="sd">    :param img: An input RGB image.</span>
-<span class="sd">    :param dst_size: destination image size.</span>
-<span class="sd">    :param src: 4 points bounding the target area.</span>
-<span class="sd">    :param dst: 4 points bounding the new position (original positions) for the src points.</span>
-
-<span class="sd">    :return: a car view binary image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">img_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
-    <span class="n">src</span> <span class="o">=</span> <span class="n">src</span> <span class="o">*</span> <span class="n">img_size</span>
-    <span class="c1"># For destination points, I&#39;m arbitrarily choosing some points to be</span>
-    <span class="c1"># a nice fit for displaying our warped result</span>
-    <span class="c1"># again, not exact, but close enough for our purposes</span>
-    <span class="n">dst</span> <span class="o">=</span> <span class="n">dst</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">dst_size</span><span class="p">)</span>
-    <span class="c1"># Given src and dst points, calculate the perspective transform matrix</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getPerspectiveTransform</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
-    <span class="c1"># Warp the image using OpenCV warpPerspective()</span>
-    <span class="n">warped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpPerspective</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">dst_size</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">warped</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pw_output1</span> <span class="o">=</span> <span class="n">perspective_warp</span><span class="p">(</span><span class="n">mask_output</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pw_output1</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">perspective_warp</span><span class="p">(</span><span class="n">mask_output</span><span class="p">)</span>
 
-<span class="n">pw_output2</span> <span class="o">=</span> <span class="n">inv_perspective_warp</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">)</span>
+<span class="n">pw_output2</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">inv_perspective_warp</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">)</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
@@ -15016,39 +14820,15 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_hist</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;returns a histogram that shows the concentration of white pixels in a certain column.</span>
-
-<span class="sd">    :param img: binary image.</span>
-<span class="sd">    :return: numpy array (histogram).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span><span class="p">:,:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">hist</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist</span> <span class="o">=</span> <span class="n">get_hist</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_hist</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">)</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1280</span><span class="p">))</span>
 
@@ -15094,148 +14874,15 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">left_a</span><span class="p">,</span> <span class="n">left_b</span><span class="p">,</span> <span class="n">left_c</span> <span class="o">=</span> <span class="p">[],[],[]</span>
-<span class="n">right_a</span><span class="p">,</span> <span class="n">right_b</span><span class="p">,</span> <span class="n">right_c</span> <span class="o">=</span> <span class="p">[],[],[]</span>
-
-<span class="k">def</span> <span class="nf">sliding_window</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">nwindows</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">minpix</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">draw_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Applies the sliding window search algorithm to fit a 2nd order curve to each lane.</span>
-
-<span class="sd">    :param img: binary image.</span>
-<span class="sd">    :param nwindows: number of windows per image.</span>
-<span class="sd">    :param margin: half width of the window.</span>
-<span class="sd">    :param minpix: min. number of white pixels per window to be accepted in deciding the next center.</span>
-<span class="sd">    :param draw_windows: set to True or False to decide whether to draw the sliding windows on the output image or not.</span>
-
-<span class="sd">    :return: bird view image with the pixels that belong to a lane colored.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">left_a</span><span class="p">,</span> <span class="n">left_b</span><span class="p">,</span> <span class="n">left_c</span><span class="p">,</span> <span class="n">right_a</span><span class="p">,</span> <span class="n">right_b</span><span class="p">,</span> <span class="n">right_c</span>
-    <span class="n">left_fit_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">right_fit_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-    <span class="n">out_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">img</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">img</span><span class="p">))</span><span class="o">*</span><span class="mi">255</span>
-
-    <span class="n">histogram</span> <span class="o">=</span> <span class="n">get_hist</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-    <span class="c1"># find peaks of left and right halves</span>
-    <span class="n">quarter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">histogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">leftx_base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">histogram</span><span class="p">[:</span><span class="n">quarter</span><span class="p">])</span>
-    <span class="n">rightx_base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">histogram</span><span class="p">[</span><span class="n">quarter</span><span class="o">*</span><span class="mi">3</span><span class="p">:])</span> <span class="o">+</span> <span class="n">quarter</span><span class="o">*</span><span class="mi">3</span>
-
-    <span class="c1"># Set height of windows</span>
-    <span class="n">window_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">nwindows</span><span class="p">)</span>
-    <span class="c1"># Identify the x and y positions of all nonzero pixels in the image</span>
-    <span class="n">nonzero</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
-    
-    <span class="n">nonzeroy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nonzero</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">nonzerox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nonzero</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="c1"># Current positions to be updated for each window</span>
-    <span class="n">leftx_current</span> <span class="o">=</span> <span class="n">leftx_base</span>
-    <span class="n">rightx_current</span> <span class="o">=</span> <span class="n">rightx_base</span>
-
-    <span class="c1"># Create empty lists to receive left and right lane pixel indices</span>
-    <span class="n">left_lane_inds</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">right_lane_inds</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># Step through the windows one by one</span>
-    <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nwindows</span><span class="p">):</span>
-        <span class="c1"># Identify window boundaries in x and y (and right and left)</span>
-        <span class="n">win_y_low</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">window_height</span>
-        <span class="n">win_y_high</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span><span class="o">*</span><span class="n">window_height</span>
-        <span class="n">win_xleft_low</span> <span class="o">=</span> <span class="n">leftx_current</span> <span class="o">-</span> <span class="n">margin</span>
-        <span class="n">win_xleft_high</span> <span class="o">=</span> <span class="n">leftx_current</span> <span class="o">+</span> <span class="n">margin</span>
-        <span class="n">win_xright_low</span> <span class="o">=</span> <span class="n">rightx_current</span> <span class="o">-</span> <span class="n">margin</span>
-        <span class="n">win_xright_high</span> <span class="o">=</span> <span class="n">rightx_current</span> <span class="o">+</span> <span class="n">margin</span>
-        <span class="c1"># Draw the windows on the visualization image</span>
-        <span class="k">if</span> <span class="n">draw_windows</span><span class="p">:</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">out_img</span><span class="p">,</span> <span class="p">(</span><span class="n">win_xleft_low</span><span class="p">,</span> <span class="n">win_y_low</span><span class="p">),</span> <span class="p">(</span><span class="n">win_xleft_high</span><span class="p">,</span> <span class="n">win_y_high</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
-            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">out_img</span><span class="p">,</span> <span class="p">(</span><span class="n">win_xright_low</span><span class="p">,</span> <span class="n">win_y_low</span><span class="p">),</span> <span class="p">(</span><span class="n">win_xright_high</span><span class="p">,</span> <span class="n">win_y_high</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="c1"># Identify the nonzero pixels in x and y within the window</span>
-        <span class="n">good_left_inds</span> <span class="o">=</span> <span class="p">((</span><span class="n">nonzeroy</span> <span class="o">&gt;=</span> <span class="n">win_y_low</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nonzeroy</span> <span class="o">&lt;</span> <span class="n">win_y_high</span><span class="p">)</span> <span class="o">&amp;</span>
-        <span class="p">(</span><span class="n">nonzerox</span> <span class="o">&gt;=</span> <span class="n">win_xleft_low</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="p">(</span><span class="n">nonzerox</span> <span class="o">&lt;</span> <span class="n">win_xleft_high</span><span class="p">))</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">good_right_inds</span> <span class="o">=</span> <span class="p">((</span><span class="n">nonzeroy</span> <span class="o">&gt;=</span> <span class="n">win_y_low</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nonzeroy</span> <span class="o">&lt;</span> <span class="n">win_y_high</span><span class="p">)</span> <span class="o">&amp;</span> 
-        <span class="p">(</span><span class="n">nonzerox</span> <span class="o">&gt;=</span> <span class="n">win_xright_low</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="p">(</span><span class="n">nonzerox</span> <span class="o">&lt;</span> <span class="n">win_xright_high</span><span class="p">))</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># Append these indices to the lists</span>
-        <span class="n">left_lane_inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">good_left_inds</span><span class="p">)</span>
-        <span class="n">right_lane_inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">good_right_inds</span><span class="p">)</span>
-        <span class="c1"># If you found &gt; minpix pixels, recenter next window on their mean position</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_left_inds</span><span class="p">)</span>  <span class="o">&gt;</span> <span class="n">minpix</span><span class="p">:</span>
-            <span class="n">leftx_current</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">nonzerox</span><span class="p">[</span><span class="n">good_left_inds</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_right_inds</span><span class="p">)</span>  <span class="o">&gt;</span> <span class="n">minpix</span><span class="p">:</span>        
-            <span class="n">rightx_current</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">nonzerox</span><span class="p">[</span><span class="n">good_right_inds</span><span class="p">]))</span>
-
-    <span class="c1"># Concatenate the arrays of indices</span>
-    <span class="n">left_lane_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">left_lane_inds</span><span class="p">)</span>
-    <span class="n">right_lane_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">right_lane_inds</span><span class="p">)</span>
-
-    <span class="c1"># Extract left and right line pixel positions</span>
-    <span class="n">leftx</span> <span class="o">=</span> <span class="n">nonzerox</span><span class="p">[</span><span class="n">left_lane_inds</span><span class="p">]</span>
-    <span class="n">lefty</span> <span class="o">=</span> <span class="n">nonzeroy</span><span class="p">[</span><span class="n">left_lane_inds</span><span class="p">]</span>
-    <span class="n">rightx</span> <span class="o">=</span> <span class="n">nonzerox</span><span class="p">[</span><span class="n">right_lane_inds</span><span class="p">]</span>
-    <span class="n">righty</span> <span class="o">=</span> <span class="n">nonzeroy</span><span class="p">[</span><span class="n">right_lane_inds</span><span class="p">]</span>
-    
-    <span class="c1"># Fit a second order polynomial to each</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">left_lane_inds</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1600</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">right_lane_inds</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1600</span><span class="p">):</span>
-        <span class="n">left_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">lefty</span><span class="p">,</span> <span class="n">leftx</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">left_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_fit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">left_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_fit</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">left_c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_fit</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        
-        <span class="n">right_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">righty</span><span class="p">,</span> <span class="n">rightx</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">right_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_fit</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">right_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_fit</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">right_c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_fit</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">left_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_a</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-        <span class="n">left_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_b</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-        <span class="n">left_c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_c</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-        <span class="n">right_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_a</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-        <span class="n">right_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_b</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-        <span class="n">right_c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_c</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">])</span>
-
-    
-    <span class="n">left_fit_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">left_a</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    <span class="n">left_fit_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">left_b</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    <span class="n">left_fit_</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">left_c</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    
-    <span class="n">right_fit_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">right_a</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    <span class="n">right_fit_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">right_b</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    <span class="n">right_fit_</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">right_c</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:])</span>
-    
-    <span class="c1"># Generate x and y values for plotting</span>
-    <span class="n">ploty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">left_fitx</span> <span class="o">=</span> <span class="n">left_fit_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ploty</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">left_fit_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ploty</span> <span class="o">+</span> <span class="n">left_fit_</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">right_fitx</span> <span class="o">=</span> <span class="n">right_fit_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">ploty</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">right_fit_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">ploty</span> <span class="o">+</span> <span class="n">right_fit_</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-
-    <span class="n">out_img</span><span class="p">[</span><span class="n">nonzeroy</span><span class="p">[</span><span class="n">left_lane_inds</span><span class="p">],</span> <span class="n">nonzerox</span><span class="p">[</span><span class="n">left_lane_inds</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-    <span class="n">out_img</span><span class="p">[</span><span class="n">nonzeroy</span><span class="p">[</span><span class="n">right_lane_inds</span><span class="p">],</span> <span class="n">nonzerox</span><span class="p">[</span><span class="n">right_lane_inds</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
-    
-    <span class="k">return</span> <span class="n">out_img</span><span class="p">,</span> <span class="p">(</span><span class="n">left_fitx</span><span class="p">,</span> <span class="n">right_fitx</span><span class="p">),</span> <span class="p">(</span><span class="n">left_fit_</span><span class="p">,</span> <span class="n">right_fit_</span><span class="p">),</span> <span class="n">ploty</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sw_output</span><span class="p">,</span> <span class="n">curves</span><span class="p">,</span> <span class="n">lanes</span><span class="p">,</span> <span class="n">ploty</span> <span class="o">=</span> <span class="n">sliding_window</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">,</span> <span class="n">draw_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sw_output</span><span class="p">,</span> <span class="n">curves</span><span class="p">,</span> <span class="n">lanes</span><span class="p">,</span> <span class="n">ploty</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">sliding_window</span><span class="p">(</span><span class="n">pw_output1</span><span class="p">,</span> <span class="n">draw_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sw_output</span><span class="p">)</span>
@@ -15276,93 +14923,17 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_curve</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">leftx</span><span class="p">,</span> <span class="n">rightx</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculates curvature of the two lane lines and the offset from center of the lane.</span>
-<span class="sd">    :param img: original RGB image.</span>
-<span class="sd">    :param leftx: numpy array to represent the left curve.</span>
-<span class="sd">    :param rightx: numpy array to represent the right curve.</span>
-
-<span class="sd">    :return: left line curvature, right line curvature, offset from center of the lane.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-
-    <span class="n">ploty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">y_eval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ploty</span><span class="p">)</span>
-    <span class="n">ym_per_pix</span> <span class="o">=</span> <span class="mf">30.5</span> <span class="o">/</span> <span class="mi">720</span> <span class="c1"># meters per pixel in y dimension</span>
-    <span class="n">xm_per_pix</span> <span class="o">=</span> <span class="mf">3.7</span> <span class="o">/</span> <span class="mi">720</span> <span class="c1"># meters per pixel in x dimension</span>
-
-    <span class="c1"># Fit new polynomials to x,y in world space</span>
-    <span class="n">left_fit_cr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">ploty</span><span class="o">*</span><span class="n">ym_per_pix</span><span class="p">,</span> <span class="n">leftx</span><span class="o">*</span><span class="n">xm_per_pix</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">right_fit_cr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">ploty</span><span class="o">*</span><span class="n">ym_per_pix</span><span class="p">,</span> <span class="n">rightx</span><span class="o">*</span><span class="n">xm_per_pix</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="c1"># Calculate the new radii of curvature</span>
-    <span class="n">left_curverad</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">y_eval</span><span class="o">*</span><span class="n">ym_per_pix</span> <span class="o">+</span> <span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">right_curverad</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">y_eval</span><span class="o">*</span><span class="n">ym_per_pix</span> <span class="o">+</span> <span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="n">car_pos</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span>
-    
-    <span class="n">l_fit_x_int</span> <span class="o">=</span> <span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">left_fit_cr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">r_fit_x_int</span> <span class="o">=</span> <span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">right_fit_cr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    
-    <span class="n">lane_center_position</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_fit_x_int</span> <span class="o">+</span> <span class="n">l_fit_x_int</span><span class="p">)</span> <span class="o">/</span><span class="mi">2</span>
-    <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">car_pos</span> <span class="o">-</span> <span class="n">lane_center_position</span><span class="p">)</span> <span class="o">*</span> <span class="n">xm_per_pix</span> <span class="o">/</span> <span class="mi">10</span>
-    <span class="c1"># Now our radius of curvature is in meters</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">left_curverad</span><span class="p">,</span> <span class="n">right_curverad</span><span class="p">,</span> <span class="n">center</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">draw_lanes</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">left_fit</span><span class="p">,</span> <span class="n">right_fit</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draws the lane on top of the original image.</span>
-<span class="sd">    :param img: original RGB image.</span>
-<span class="sd">    :param left_fit: numpy array to represent the left curve.</span>
-<span class="sd">    :param right_fit: numpy array to represent the right curve.</span>
-
-<span class="sd">    :return: output image where the lane is highlighted.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-
-    <span class="n">ploty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">color_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-    
-    <span class="n">lane</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-
-    <span class="n">left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">left_fit</span><span class="p">,</span> <span class="n">ploty</span><span class="p">]))])</span>
-    <span class="n">right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">right_fit</span><span class="p">,</span> <span class="n">ploty</span><span class="p">])))])</span>
-    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">))</span>
-    
-    <span class="n">cv2</span><span class="o">.</span><span class="n">fillPoly</span><span class="p">(</span><span class="n">color_img</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">(</span><span class="n">points</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span>
-
-    <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">lane</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">left</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">polylines</span><span class="p">(</span><span class="n">lane</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="n">right</span><span class="p">),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-
-    <span class="n">inv_perspective</span> <span class="o">=</span> <span class="n">inv_perspective_warp</span><span class="p">(</span><span class="n">lane</span><span class="p">)</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">inv_perspective</span><span class="p">,</span> <span class="mi">1</span> <span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-    <span class="n">inv_perspective</span> <span class="o">=</span> <span class="n">inv_perspective_warp</span><span class="p">(</span><span class="n">color_img</span><span class="p">)</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">inv_perspective</span><span class="p">,</span> <span class="mi">1</span> <span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">output</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">curverad</span> <span class="o">=</span><span class="n">get_curve</span><span class="p">(</span><span class="n">RGB</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">curverad</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_curve</span><span class="p">(</span><span class="n">RGB</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">lane_curve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">curverad</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curverad</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-<span class="n">cur_output</span> <span class="o">=</span> <span class="n">draw_lanes</span><span class="p">(</span><span class="n">RGB</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">cur_output</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">draw_lanes</span><span class="p">(</span><span class="n">RGB</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cur_output</span><span class="p">)</span>
@@ -15403,67 +14974,19 @@ jp-needs-light-background
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">debugging</span><span class="o">=</span><span class="mi">0</span>
-<span class="k">def</span> <span class="nf">full_pipeline</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
-    <span class="n">th_img</span> <span class="o">=</span> <span class="n">thresholding</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-
-    <span class="n">pew_img</span> <span class="o">=</span> <span class="n">perspective_warp</span><span class="p">(</span><span class="n">th_img</span><span class="p">)</span>
-
-    <span class="n">sw_img</span><span class="p">,</span> <span class="n">curves</span><span class="p">,</span> <span class="n">lanes</span><span class="p">,</span> <span class="n">ploty</span> <span class="o">=</span> <span class="n">sliding_window</span><span class="p">(</span><span class="n">pew_img</span><span class="p">,</span> <span class="n">draw_windows</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">curverad</span> <span class="o">=</span> <span class="n">get_curve</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-    <span class="n">lane_curve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">curverad</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curverad</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-
-    <span class="n">img</span> <span class="o">=</span> <span class="n">draw_lanes</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">curves</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">curves</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    
-    <span class="n">font</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span>
-    <span class="n">fontColor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">fontSize</span><span class="o">=</span><span class="mf">0.5</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s1">&#39;Lane Curvature: </span><span class="si">{:.0f}</span><span class="s1"> m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lane_curve</span><span class="p">),</span> <span class="p">(</span><span class="mi">570</span><span class="p">,</span> <span class="mi">620</span><span class="p">),</span> <span class="n">font</span><span class="p">,</span> <span class="n">fontSize</span><span class="p">,</span> <span class="n">fontColor</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s1">&#39;Vehicle offset: </span><span class="si">{:.4f}</span><span class="s1"> m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">curverad</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="mi">570</span><span class="p">,</span> <span class="mi">650</span><span class="p">),</span> <span class="n">font</span><span class="p">,</span> <span class="n">fontSize</span><span class="p">,</span> <span class="n">fontColor</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    
-    <span class="k">if</span><span class="p">(</span><span class="n">debugging</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
-        <span class="n">final_img</span> <span class="o">=</span> <span class="n">img</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">th_img_rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">th_img</span><span class="p">,</span><span class="n">th_img</span><span class="p">,</span><span class="n">th_img</span><span class="p">))</span><span class="o">*</span><span class="mi">255</span>    
-        <span class="n">pew_img_rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">pew_img</span><span class="p">,</span><span class="n">pew_img</span><span class="p">,</span><span class="n">pew_img</span><span class="p">))</span><span class="o">*</span><span class="mi">255</span>
-        
-        <span class="n">img_row1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">th_img_rgb</span><span class="p">,</span> <span class="n">pew_img_rgb</span><span class="p">),</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">img_row2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">sw_img</span><span class="p">,</span> <span class="n">img</span><span class="p">),</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">final_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">img_row1</span><span class="p">,</span> <span class="n">img_row2</span><span class="p">),</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">final_img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">final_img</span><span class="p">,(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-
-    <span class="k">return</span> <span class="n">final_img</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;./test_images/straight_lines1.jpg&quot;</span><span class="p">)</span>
 
 <span class="n">RGB</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
 
-<span class="n">output</span> <span class="o">=</span> <span class="n">full_pipeline</span><span class="p">(</span><span class="n">RGB</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">full_pipeline</span><span class="p">(</span><span class="n">RGB</span><span class="p">)</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>

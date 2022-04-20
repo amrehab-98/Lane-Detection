@@ -5,6 +5,9 @@ from moviepy.editor import VideoFileClip
 import sys
 
 debugging = 0
+right_curves, left_curves = [], []
+left_a, left_b, left_c = [], [], []
+right_a, right_b, right_c = [], [], []
 
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
     """Applies sobel filter and applies threshold.
@@ -403,9 +406,6 @@ def full_pipeline(img):
 
 
 if __name__ == '__main__':
-    right_curves, left_curves = [], []
-    left_a, left_b, left_c = [], [], []
-    right_a, right_b, right_c = [], [], []
     myclip = VideoFileClip(sys.argv[1])
     output_vid = sys.argv[2]
     if(sys.argv[3] == "0"):

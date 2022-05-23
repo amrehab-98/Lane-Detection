@@ -3,14 +3,8 @@ import numpy as np
 import cv2
 from moviepy.editor import VideoFileClip
 import sys
-
-import os
-import glob
-
+import copy
 from numpy.core.numeric import full
-
-
-
 
 debugging = 0
 right_curves, left_curves = [], []
@@ -46,13 +40,15 @@ def detect_cars(img):
     idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.6, 0)
     idxs = np.asarray(idxs)
     
+    output_img = copy.copy(img)
+
     for count, i in enumerate(idxs.flatten()):
         (x, y) = [boxes[i][0], boxes[i][1]]
         (w, h) = [boxes[i][2], boxes[i][3]]
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255,0,0), 2)
-        cv2.putText(img, "{} {}: {}%".format(labels[classIDs[i]], count + 1, int(100*confidences[i])), (x, y - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5\
+        cv2.rectangle(output_img, (x, y), (x + w, y + h), (255,0,0), 2)
+        cv2.putText(output_img, "{} {}: {}%".format(labels[classIDs[i]], count + 1, int(100*confidences[i])), (x, y - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5\
                     , (255, 255, 255), 1) 
-    return img
+    return output_img
 
 
 
@@ -456,29 +452,31 @@ def full_pipeline(img):
     return final_img
 
 def phase_2_pipeline(img):
-    image_with_lanes = full_pipeline(img)
-    output_img = detect_cars(image_with_lanes)
+    img_with_cars = detect_cars(img)
+    output_img = full_pipeline(img_with_cars)
     return output_img
 
+def phase_2_setup():
+    weights_path = './yolo/yolov3.weights'
+    config_path = './yolo/yolov3.cfg'
+    global net 
+    net= cv2.dnn.readNetFromDarknet(config_path, weights_path)
+    names = net.getLayerNames()
+    global layers_names 
+    layers_names = [names[i - 1] for i in net.getUnconnectedOutLayers()]
+    labels_path = './yolo/coco.names'
+    global labels 
+    labels = open(labels_path).read().strip().split('\n')
+    return net,layers_names,labels
 
 
 if __name__ == '__main__':
     myclip = VideoFileClip(sys.argv[1])
     output_vid = sys.argv[2]
-    if(sys.argv[3] == "0"):
-        debugging = 0
-        clip = myclip.fl_image(full_pipeline)
-    elif(sys.argv[3] == "1"):
-        debugging = 1
+    debugging = sys.argv[3]
+    if(sys.argv[4] == "1"):
         clip = myclip.fl_image(full_pipeline)
     else:
-        weights_path = './yolo/yolov3_2.weights'
-        config_path = './yolo/yolov3_2.cfg'
-        net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
-        names = net.getLayerNames()
-        layers_names = [names[i - 1] for i in net.getUnconnectedOutLayers()]
-        labels_path = './yolo/coco.names'
-        labels = open(labels_path).read().strip().split('\n')
+        net,layers_names,labels=phase_2_setup()
         clip = myclip.fl_image(phase_2_pipeline)
-
     clip.write_videofile(output_vid, audio=False)

@@ -3,4 +3,3 @@ input/*
 camera_cal/*
 *.mp4
 *.weights
-*.cfg

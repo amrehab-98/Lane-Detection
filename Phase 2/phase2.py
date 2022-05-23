@@ -4,9 +4,7 @@ import cv2
 from moviepy.editor import VideoFileClip
 import sys
 import copy
-from numpy.core.numeric import full
 
-debugging = 0
 right_curves, left_curves = [], []
 left_a, left_b, left_c = [], [], []
 right_a, right_b, right_c = [], [], []
@@ -14,6 +12,12 @@ right_a, right_b, right_c = [], [], []
 
 # PHASE 2 FUNCTIONS
 def detect_cars(img):
+    """Detects cars in a given input image using YOLOv4 algorithm.
+
+    :param img: an RGB image.
+
+    :return: an image with boxes around detected cars.
+    """
     (H, W) = img.shape[:2]
     blob = cv2.dnn.blobFromImage(img, 1/255.0, (416, 416), crop=False, swapRB=False)
     net.setInput(blob)
@@ -28,7 +32,7 @@ def detect_cars(img):
             scores = detection[5:]
             classID = np.argmax(scores)
             confidence = scores[classID]
-            if confidence > 0.50:
+            if confidence > 0.80:
                 box = detection[:4] * np.array([W, H, W, H])
                 bx,by,bw,bh = box.astype('int')
                 x = int(bx - bw/2)
@@ -37,7 +41,7 @@ def detect_cars(img):
                 confidences.append(confidence)
                 classIDs.append(classID)
     
-    idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.6, 0)
+    idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.80, 0.4)
     idxs = np.asarray(idxs)
     
     output_img = copy.copy(img)
@@ -45,16 +49,12 @@ def detect_cars(img):
     for count, i in enumerate(idxs.flatten()):
         (x, y) = [boxes[i][0], boxes[i][1]]
         (w, h) = [boxes[i][2], boxes[i][3]]
-        cv2.rectangle(output_img, (x, y), (x + w, y + h), (255,0,0), 2)
+        cv2.rectangle(output_img, (x, y), (x + w, y + h), (200,0,200), 2)
         cv2.putText(output_img, "{} {}: {}%".format(labels[classIDs[i]], count + 1, int(100*confidences[i])), (x, y - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5\
                     , (255, 255, 255), 1) 
     return output_img
 
-
-
 #########
-
-
 
 def abs_sobel_thresh(gray, orient='x', thresh=(0, 255)):
     """Applies sobel filter and applies threshold.
@@ -369,7 +369,6 @@ def get_curve(img, leftx, rightx):
     # Calculate the new radii of curvature
     left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
     right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
-
     car_pos = img.shape[1]/2
     
     l_fit_x_int = left_fit_cr[0]*img.shape[0]**2 + left_fit_cr[1]*img.shape[0] + left_fit_cr[2]
@@ -436,8 +435,8 @@ def full_pipeline(img):
     fontSize=0.5
     cv2.putText(img, 'Lane Curvature: {:.0f} m'.format(lane_curve), (570, 620), font, fontSize, fontColor, 2)
     cv2.putText(img, 'Vehicle offset: {:.4f} m'.format(curverad[2]), (570, 650), font, fontSize, fontColor, 2)
-    
-    if(debugging==0):
+   
+    if(debugging == "0"):
         final_img = img
     else:
         th_img_rgb = np.dstack((th_img,th_img,th_img))*255    
@@ -457,8 +456,8 @@ def phase_2_pipeline(img):
     return output_img
 
 def phase_2_setup():
-    weights_path = './yolo/yolov3.weights'
-    config_path = './yolo/yolov3.cfg'
+    weights_path = './yolo/yolov4.weights'
+    config_path = './yolo/yolov4.cfg'
     global net 
     net= cv2.dnn.readNetFromDarknet(config_path, weights_path)
     names = net.getLayerNames()
@@ -473,10 +472,14 @@ def phase_2_setup():
 if __name__ == '__main__':
     myclip = VideoFileClip(sys.argv[1])
     output_vid = sys.argv[2]
+    global debugging
+    # select debugging mode on or off
     debugging = sys.argv[3]
-    if(sys.argv[4] == "1"):
+    # select phase 1 or 2
+    phase = sys.argv[4]
+    if(phase == "1"):
         clip = myclip.fl_image(full_pipeline)
     else:
         net,layers_names,labels=phase_2_setup()
         clip = myclip.fl_image(phase_2_pipeline)
-    clip.write_videofile(output_vid, audio=False)
+    clip.write_videofile(output_vid, audio=False, threads=8)

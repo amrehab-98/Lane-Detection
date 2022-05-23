@@ -15,8 +15,18 @@
 ```
 ___________________________
 
-## Pipeline Steps
+## Pipeline Steps for lane detection
+1) Combined thresholding:
+    - Apply sobel in x direction and apply a threshold.
+    - Calculate direction of the gradient and apply an angle threshold.
+    - Apply threshold on R, G, S, L channels and apply the combined mask on the input image.
+2) Perspective warp to get bird eye view for the lanes.
+3) Sliding window algorithm to detect the lane lines pixels and fit a second order polynomial to them.
+4) Calculate the radius of curvature for the lane lines.
+5) Draw the lane lines and highlight the lane.
 
+## Car Detection
+- We use YOLOv4 algorithm. We downloaded the pre-trained [weights](https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights) and used this [config file](https://github.com/Tianxiaomo/pytorch-YOLOv4/blob/master/cfg/yolov4.cfg).
 
 ___________________________
 
